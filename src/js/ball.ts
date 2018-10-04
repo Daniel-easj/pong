@@ -12,9 +12,12 @@ export class Ball implements GameObject
     private speed:number = 60;
     private size:number= 10;
 
+    public defaultPosition:Vector;
+
     constructor (position:Vector, gameEngine:GameEngine)
     {
         this.position = position;
+        this.defaultPosition= position;
         this.direction = new Vector(0.7, 1);
         this.gameEngine = gameEngine;
         this.height = this.size;
@@ -48,6 +51,11 @@ export class Ball implements GameObject
         if (other == this.gameEngine.player1)
         {
             this.direction.x *= -1;
+        }
+
+        if (other == this.gameEngine.player2)
+        {
+            this.direction.x *= 1;
         }
     }
 

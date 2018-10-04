@@ -2,6 +2,7 @@ import { GameObject } from "./gameObject";
 import { Framerate } from "./framerate";
 import { Vector } from "./vector";
 import { Player } from "./player";
+import { Player2 } from "./player2";
 import { Ball } from "./ball";
 
 /*
@@ -14,6 +15,7 @@ export class GameEngine
     // items in the game
     public ball:Ball;
     public player1:Player;
+    public player2:Player2;
  
     // canvas info
     public canvasWidth:number;
@@ -22,6 +24,9 @@ export class GameEngine
     // keep track of key states
     public aKey:boolean;
     public qKey:boolean;
+
+    public oKey:boolean;
+    public lKey:boolean;
 
     private canvas:HTMLCanvasElement;
     private ctx:CanvasRenderingContext2D;
@@ -34,10 +39,18 @@ export class GameEngine
     private timeZero: number = this.date.getTime();
     private timeNow: number;
 
+    public score:number;
+
+    
+
+
     constructor()
     {
         this.canvas = <HTMLCanvasElement> document.getElementById("canvas");
         this.ctx = this.canvas.getContext("2d");
+
+        let element: HTMLDivElement = <HTMLDivElement> document.getElementById("score");
+        //element.innerHTML = this.score;
 
         this.canvasWidth = this.canvas.width;
         this.canvasHeight = this.canvas.height;
@@ -47,15 +60,26 @@ export class GameEngine
         document.addEventListener('keydown', this.keyDown.bind(this));
 
         //ceate gameobjects
-        this.objects.push(new Framerate(new Vector(10,10)));
+        //this.objects.push(new Framerate(new Vector(10,10)));
         
-        this.player1 = new Player(new Vector(20,10), this);
+        this.player1 = new Player(new Vector(10, 10), this);
         this.objects.push(this.player1);
+
+        this.player2 = new Player2(new Vector(270,10), this)
+        this.objects.push(this.player2);
 
         this.ball = new Ball(new Vector(this.canvasWidth/2, this.canvasHeight/2), this);
         this.objects.push(this.ball);
 
         this.gameLoop();
+    }
+
+    // Resets objects position
+    private resetGameObjects():void{
+        this.player1.position = this.player1.defaultPosition;
+        this.player2.position = this.player2.defaultPosition;
+        
+        this.ball.position = this.ball.defaultPosition;
     }
 
     // keyboard event
@@ -68,6 +92,12 @@ export class GameEngine
                 break;
             case "q":
                 this.qKey = true;
+                break;
+            case "l":
+                this.oKey = true;
+                break;
+            case "o":
+                this.lKey = true;
         }
     }
 
@@ -81,6 +111,11 @@ export class GameEngine
             case "q":
                 this.qKey=false;
                 break;
+                case "l":
+                this.oKey = false;
+                break;
+            case "o":
+                this.lKey = false;
         }   
     } 
     
@@ -126,9 +161,23 @@ export class GameEngine
             // every element is drawn on canvas
             element.draw(this.ctx);
         });
-        
+
+        if(this.ball.position.x > this.player1.position.x -8){
+            this.resetGameObjects();
+            this.player1.playerPoints++;
+            this.score++;
+        }
+
+        if(this.ball.position.x < this.player2.position.x + 8){
+            this.resetGameObjects();
+            this.player2.playerPoints++;
+            this.score++;
+        }
+
         // call the main gamelop again (~60fps by default)
         window.requestAnimationFrame(this.gameLoop.bind(this));
+        
+        
 
 
 

@@ -2,17 +2,17 @@ import { Vector } from "./vector";
 import { GameObject } from "./gameObject";
 import { GameEngine } from "./index";
 
-export class Player implements GameObject
+export class Player2 implements GameObject
 {   
     public position:Vector 
     private gameEngine:GameEngine;
 
     private speed:number = 100;
-    public height:number = 30;
+    public height:number = 100;
     public width:number =10;
-    public playerPoints: number;
 
     public defaultPosition:Vector;
+    public playerPoints: number;
 
     constructor(position:Vector, gameEngine:GameEngine)
     {
@@ -22,12 +22,12 @@ export class Player implements GameObject
     }
 
     update(time: number): void {
-        if (this.gameEngine.aKey)
+        if (this.gameEngine.oKey)
         {
             //move down
             this.position.y += time/1000 * this.speed 
         }
-        if (this.gameEngine.qKey)
+        if (this.gameEngine.lKey)
         {
             //move up
             this.position.y -= time/1000 * this.speed
